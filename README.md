@@ -30,6 +30,48 @@ Designed a secure Stripe Checkout payment flow using backend session creation, d
 
 ---
 
+## How to Run Locally
+
+### 1. Clone the Repository
+git clone <your-repo-link>
+cd LearnLynk-Submission
+
+### 2. Setup Frontend
+cd frontend
+npm install
+Create a .env.local file inside frontend:
+
+### 3. env
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+
+### 4. Start the frontend:
+npm run dev
+Visit:http://localhost:3000/dashboard/today
+
+---
+
+### Setup Supabase Backend
+
+- Run schema.sql in Supabase SQL Editor
+- Run rls_policies.sql after schema
+- Deploy the Edge Function create-task via Supabase Dashboard or CLI
+- Set environment variables:
+    - SUPABASE_URL
+    - SUPABASE_SERVICE_ROLE_KEY
+
+---
+
+### Testing
+
+Insert dummy data using SQL
+
+Test the Edge Function using Supabase Invoke or Postman
+
+Mark tasks complete from the frontend
+
+---
+
 ## Stripe Answer
 
 When a user clicks “Pay Application Fee” on the frontend, the `application_id` is sent to the backend. The backend first creates a `payment_requests` row with status set to `pending` before calling Stripe. A Stripe Checkout Session is then created with the fee amount and metadata such as `application_id` and `payment_request_id`. The returned Stripe `session_id` is stored back in the `payment_requests` table. The frontend is redirected to the Stripe Checkout URL for secure payment. After payment, Stripe sends a `checkout.session.completed` webhook to the backend. The webhook signature is verified for authenticity. On successful verification, the `payment_requests` status is updated to `paid`, and the corresponding application is marked as `payment_completed`. This ensures payment confirmation is handled securely on the server and prevents fake success from the frontend.
